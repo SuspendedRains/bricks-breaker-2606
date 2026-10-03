@@ -20,8 +20,7 @@ void Game::Reset()
 	ResetBall();
 
 	// TODO #2 - Add this brick and 4 more bricks to the vector
-	int bricksSize = bricks.size();
-	for (size_t i = 0; i < bricksSize; ++i)
+	for (size_t i = 0; i < 5; ++i)
 	{
 		brick.width = 10;
 		brick.height = 2;
@@ -29,7 +28,7 @@ void Game::Reset()
 		brick.y_position = 5;
 		brick.doubleThick = true;
 		brick.color = ConsoleColor::DarkGreen;
-		bricks[i] = brick;
+		bricks.push_back(brick);
 	}
 }
 
@@ -101,6 +100,8 @@ void Game::CheckCollision()
 	{
 		ball.moving = false;
 		Console::WordWrap(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, 100, "You win! Press 'R' to play again.");
+		if (GetAsyncKeyState(0x52))
+			Game::Reset();
 	}
 
 	if (paddle.Contains(ball.x_position + ball.x_velocity, ball.y_velocity + ball.y_position))
@@ -109,4 +110,11 @@ void Game::CheckCollision()
 	}
 
 	// TODO #7 - If ball touches bottom of window, pause ball and display (render) defeat text with R to reset
+	if (ball.y_position > paddle.y_position && (ball.x_position < paddle.x_position || ball.x_position > paddle.x_position + paddle.width))
+	{
+		ball.moving = false;
+		Console::WordWrap(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, 100, "You lose. Press 'R' to play again.");
+		if (GetAsyncKeyState(0x52))
+			Game::Reset();
+	}
 }
